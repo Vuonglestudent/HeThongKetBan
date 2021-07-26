@@ -15,6 +15,8 @@ namespace MakeFriendSolution.Models.ViewModels
         public string FullName { get; set; }
         public bool hasAvatar { get; set; }
         public string Avatar { get; set; }
+        public List<string> FilePaths { get; set; }
+        public string MessageType { get; set; }
 
     }
 }

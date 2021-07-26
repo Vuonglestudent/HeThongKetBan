@@ -28,6 +28,7 @@ namespace MakeFriendSolution.EF
             modelBuilder.ApplyConfiguration(new FeatureDetailConfig());
             modelBuilder.ApplyConfiguration(new ImageScoreConfig());
             modelBuilder.ApplyConfiguration(new NotificationConfig());
+            modelBuilder.ApplyConfiguration(new FeedbackConfig());
             modelBuilder.Seed();
         }
 
@@ -47,5 +48,7 @@ namespace MakeFriendSolution.EF
         public DbSet<SearchFeature> SearchFeatures { get; set; }
         public DbSet<ImageScore> ImageScores { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Feedback> Feedbacks { get; set; }
+        public DbSet<Relationship> Relationships { get; set; }
     }
 }

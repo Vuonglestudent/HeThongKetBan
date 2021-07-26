@@ -32,7 +32,7 @@ namespace MakeFriendSolution.Controllers
             _userApplication = userApplication;
             _featureApplication = featureApplication;
         }
-        
+
         /// <summary>
         /// Generate dữ liệu giả phục vụ demo
         /// </summary>
@@ -70,8 +70,9 @@ namespace MakeFriendSolution.Controllers
             int tenNuSize = tenNu.Count;
             Random random = new Random();
             int gmailCount = 1;
-            //Random Nu
-            for (int i = 0; i < 40; i++)
+
+            //Random Nu 40
+            for (int i = 0; i < 200; i++)
             {
                 var user = new AppUser
                 {
@@ -92,9 +93,9 @@ namespace MakeFriendSolution.Controllers
                 };
                 user.Summary = "Mình là " + user.FullName + ", kết bạn với mình nhé!";
                 user.Title = "Kết bạn với " + user.FullName + " nhé!";
-                user.TypeAccount = ETypeAccount.Facebook;
+                user.TypeAccount = RandomEnumValue<ETypeAccount>();
                 user.UserName = user.Email;
-                user.NumberOfLikes = random.Next(10, 10000);
+                user.NumberOfLikes = random.Next(3, 99);
 
                 user.AvatarPath = "women/" + random.Next(101, 300) + ".jpg";
 
@@ -104,7 +105,7 @@ namespace MakeFriendSolution.Controllers
 
                 int createdDay = random.Next(1, 29);
                 int createdMonth = random.Next(1, 13);
-                int createdYear = random.Next(2018, 2021);
+                int createdYear = random.Next(2020, 2022);
 
                 var dob = new DateTime(year, month, day);
                 var createdDate = new DateTime(createdYear, createdMonth, createdDay);
@@ -114,8 +115,8 @@ namespace MakeFriendSolution.Controllers
 
                 users.Add(user);
             }
-            //Random Nam
-            for (int i = 0; i < 50; i++)
+            //Random Nam 50
+            for (int i = 0; i < 185; i++)
             {
                 var user = new AppUser
                 {
@@ -136,9 +137,9 @@ namespace MakeFriendSolution.Controllers
                 };
                 user.Summary = "Mình là " + user.FullName + ", kết bạn với mình nhé!";
                 user.Title = "Kết bạn với " + user.FullName + " nhé!";
-                user.TypeAccount = ETypeAccount.Facebook;
+                user.TypeAccount = RandomEnumValue< ETypeAccount>();
                 user.UserName = user.Email;
-                user.NumberOfLikes = random.Next(10, 10000);
+                user.NumberOfLikes = random.Next(3, 99);
 
                 user.AvatarPath = "men/" + random.Next(1, 100) + ".jpg";
 
@@ -148,7 +149,7 @@ namespace MakeFriendSolution.Controllers
 
                 int createdDay = random.Next(1, 29);
                 int createdMonth = random.Next(1, 13);
-                int createdYear = random.Next(2018, 2022);
+                int createdYear = random.Next(2020, 2022);
 
                 var dob = new DateTime(year, month, day);
                 var createdDate = new DateTime(createdYear, createdMonth, createdDay);
@@ -158,96 +159,96 @@ namespace MakeFriendSolution.Controllers
                 users.Add(user);
             }
 
-            //Random Nu
-            for (int i = 0; i < 80; i++)
-            {
-                var user = new AppUser
-                {
-                    FullName = ho[random.Next(0, hoSize)] + " " + tenNu[random.Next(0, tenNuSize)],
-                    Gender = EGender.Nữ,
+            ////Random Nu 80
+            //for (int i = 0; i < 20; i++)
+            //{
+            //    var user = new AppUser
+            //    {
+            //        FullName = ho[random.Next(0, hoSize)] + " " + tenNu[random.Next(0, tenNuSize)],
+            //        Gender = EGender.Nữ,
 
-                    Email = (gmailCount++).ToString() + "@gmail.com",
-                    FindPeople = RandomEnumValue<EGender>(),
-                    Height = random.Next(145, 180),
-                    Weight = random.Next(30, 70),
-                    IsInfoUpdated = true,
-                    Job = RandomEnumValue<EJob>(),
-                    Location = RandomEnumValue<ELocation>(),
-                    PassWord = "1111",
-                    PhoneNumber = "+84" + (random.Next(100000000, 999999999)),
-                    Role = ERole.User,
-                    Status = EUserStatus.Active
-                };
-                user.Summary = "Mình là " + user.FullName + ", kết bạn với mình nhé!";
-                user.Title = "Kết bạn với " + user.FullName + " nhé!";
-                user.TypeAccount = ETypeAccount.System;
-                user.UserName = user.Email;
-                user.NumberOfLikes = random.Next(10, 10000);
+            //        Email = (gmailCount++).ToString() + "@gmail.com",
+            //        FindPeople = RandomEnumValue<EGender>(),
+            //        Height = random.Next(145, 180),
+            //        Weight = random.Next(30, 70),
+            //        IsInfoUpdated = true,
+            //        Job = RandomEnumValue<EJob>(),
+            //        Location = RandomEnumValue<ELocation>(),
+            //        PassWord = "1111",
+            //        PhoneNumber = "+84" + (random.Next(100000000, 999999999)),
+            //        Role = ERole.User,
+            //        Status = EUserStatus.Active
+            //    };
+            //    user.Summary = "Mình là " + user.FullName + ", kết bạn với mình nhé!";
+            //    user.Title = "Kết bạn với " + user.FullName + " nhé!";
+            //    user.TypeAccount = ETypeAccount.System;
+            //    user.UserName = user.Email;
+            //    user.NumberOfLikes = random.Next(3, 99);
 
-                user.AvatarPath = "women/" + random.Next(101, 300) + ".jpg";
+            //    user.AvatarPath = "women/" + random.Next(101, 300) + ".jpg";
 
-                int day = random.Next(1, 29);
-                int month = random.Next(1, 13);
-                int year = random.Next(1970, 2007);
+            //    int day = random.Next(1, 29);
+            //    int month = random.Next(1, 13);
+            //    int year = random.Next(1970, 2007);
 
-                int createdDay = random.Next(1, 29);
-                int createdMonth = random.Next(1, 13);
-                int createdYear = random.Next(2018, 2021);
+            //    int createdDay = random.Next(1, 29);
+            //    int createdMonth = random.Next(1, 13);
+            //    int createdYear = random.Next(2020, 2021);
 
-                var dob = new DateTime(year, month, day);
-                var createdDate = new DateTime(createdYear, createdMonth, createdDay);
+            //    var dob = new DateTime(year, month, day);
+            //    var createdDate = new DateTime(createdYear, createdMonth, createdDay);
 
-                user.CreatedAt = createdDate;
-                user.Dob = dob.Date;
+            //    user.CreatedAt = createdDate;
+            //    user.Dob = dob.Date;
 
-                users.Add(user);
-            }
-            //Random Nam
-            for (int i = 0; i < 90; i++)
-            {
-                var user = new AppUser
-                {
-                    FullName = ho[random.Next(0, hoSize)] + " " + tenNam[random.Next(0, tenNamSize)],
-                    Gender = EGender.Nam,
+            //    users.Add(user);
+            //}
+            ////Random Nam 90
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    var user = new AppUser
+            //    {
+            //        FullName = ho[random.Next(0, hoSize)] + " " + tenNam[random.Next(0, tenNamSize)],
+            //        Gender = EGender.Nam,
 
-                    Email = (gmailCount++).ToString() + "@gmail.com",
-                    FindPeople = RandomEnumValue<EGender>(),
-                    Height = random.Next(150, 200),
-                    Weight = random.Next(40, 80),
-                    IsInfoUpdated = true,
-                    Job = RandomEnumValue<EJob>(),
-                    Location = RandomEnumValue<ELocation>(),
-                    PassWord = "1111",
-                    PhoneNumber = "+84" + (random.Next(100000000, 999999999)),
-                    Role = ERole.User,
-                    Status = EUserStatus.Active
-                };
-                user.Summary = "Mình là " + user.FullName + ", kết bạn với mình nhé!";
-                user.Title = "Kết bạn với " + user.FullName + " nhé!";
-                user.TypeAccount = ETypeAccount.System;
-                user.UserName = user.Email;
-                user.NumberOfLikes = random.Next(10, 10000);
+            //        Email = (gmailCount++).ToString() + "@gmail.com",
+            //        FindPeople = RandomEnumValue<EGender>(),
+            //        Height = random.Next(150, 200),
+            //        Weight = random.Next(40, 80),
+            //        IsInfoUpdated = true,
+            //        Job = RandomEnumValue<EJob>(),
+            //        Location = RandomEnumValue<ELocation>(),
+            //        PassWord = "1111",
+            //        PhoneNumber = "+84" + (random.Next(100000000, 999999999)),
+            //        Role = ERole.User,
+            //        Status = EUserStatus.Active
+            //    };
+            //    user.Summary = "Mình là " + user.FullName + ", kết bạn với mình nhé!";
+            //    user.Title = "Kết bạn với " + user.FullName + " nhé!";
+            //    user.TypeAccount = ETypeAccount.System;
+            //    user.UserName = user.Email;
+            //    user.NumberOfLikes = random.Next(3, 99);
 
-                user.AvatarPath = "men/" + random.Next(1, 100) + ".jpg";
+            //    user.AvatarPath = "men/" + random.Next(1, 100) + ".jpg";
 
-                int day = random.Next(1, 29);
-                int month = random.Next(1, 13);
-                int year = random.Next(1970, 2007);
+            //    int day = random.Next(1, 29);
+            //    int month = random.Next(1, 13);
+            //    int year = random.Next(1970, 2007);
 
-                int createdDay = random.Next(1, 29);
-                int createdMonth = random.Next(1, 13);
-                int createdYear = random.Next(2018, 2021);
+            //    int createdDay = random.Next(1, 29);
+            //    int createdMonth = random.Next(1, 13);
+            //    int createdYear = random.Next(2020, 2021);
 
-                var dob = new DateTime(year, month, day);
-                var createdDate = new DateTime(createdYear, createdMonth, createdDay);
-                user.Dob = dob.Date;
-                user.CreatedAt = createdDate.Date;
+            //    var dob = new DateTime(year, month, day);
+            //    var createdDate = new DateTime(createdYear, createdMonth, createdDay);
+            //    user.Dob = dob.Date;
+            //    user.CreatedAt = createdDate.Date;
 
-                users.Add(user);
-            }
+            //    users.Add(user);
+            //}
 
-            //Random InActive Account
-            for (int i = 0; i < 36; i++)
+            //Random InActive Account 36
+            for (int i = 0; i < 9; i++)
             {
                 var user = new AppUser
                 {
@@ -264,15 +265,15 @@ namespace MakeFriendSolution.Controllers
                     PassWord = "1111",
                     PhoneNumber = "+84" + (random.Next(100000000, 999999999)),
                     Role = ERole.User,
-                    Status = RandomEnumValue<EUserStatus>()
+                    Status = EUserStatus.Inactive
                 };
                 user.Summary = "Mình là " + user.FullName + ", kết bạn với mình nhé!";
                 user.Title = "Kết bạn với " + user.FullName + " nhé!";
-                user.TypeAccount = ETypeAccount.Google;
+                user.TypeAccount = RandomEnumValue<ETypeAccount>();
                 user.UserName = user.Email;
-                user.NumberOfLikes = random.Next(10, 10000);
+                user.NumberOfLikes = random.Next(3, 99);
 
-                while(user.Gender == EGender.Tất_Cả)
+                while (user.Gender == EGender.Tất_Cả)
                 {
                     user.Gender = RandomEnumValue<EGender>();
                 }
@@ -292,7 +293,7 @@ namespace MakeFriendSolution.Controllers
 
                 int createdDay = random.Next(1, 29);
                 int createdMonth = random.Next(1, 13);
-                int createdYear = random.Next(2018, 2021);
+                int createdYear = random.Next(2020, 2021);
 
                 var dob = new DateTime(year, month, day);
                 var createdDate = new DateTime(createdYear, createdMonth, createdDay);
@@ -303,22 +304,40 @@ namespace MakeFriendSolution.Controllers
                 users.Add(user);
             }
 
-            //var response = new List<UserResponse>();
-            //foreach (var item in users)
-            //{
-            //    var u = new UserResponse(item, _storageService);
-            //    response.Add(u);
-            //}
-            var fromDate = new DateTime(2018, 1, 1);
-            var toDate = new DateTime(2021, 12, 30);
+            foreach (var item in users)
+            {
+                _context.Users.Add(item);
+            }
+            _context.SaveChanges();
+
+
+            //_context.Users.AddRange(users);
+            //_context.SaveChanges();
+            //users = _context.Users.ToList();
+
+
+            foreach (var item in users)
+            {
+                await GenData(item);
+            }
+            return Ok("Done");
+        }
+
+        [AllowAnonymous]
+        [HttpGet("statistic")]
+        public IActionResult GenStatistic()
+        {
+            Random random = new Random();
+            var fromDate = new DateTime(2021, 1, 1);
+            var toDate = new DateTime(2021, 9, 30);
             List<Access> accesses = new List<Access>();
 
             while (toDate > fromDate)
             {
                 var access = new Access
                 {
-                    AuthorizeCount = random.Next(500, 2000),
-                    UnauthorizeCount = random.Next(200, 800),
+                    AuthorizeCount = random.Next(100, 230),
+                    UnauthorizeCount = random.Next(20, 100),
                     Date = fromDate.Date
                 };
                 fromDate = fromDate.AddDays(1);
@@ -326,15 +345,8 @@ namespace MakeFriendSolution.Controllers
             }
 
             _context.Accesses.AddRange(accesses);
-            _context.Users.AddRange(users);
             _context.SaveChanges();
-            var newUsers = _context.Users.ToList();
-
-            foreach (var item in newUsers)
-            {
-                await GenData(item);
-            }
-            return Ok();
+            return Ok("Done");
         }
 
         private static T RandomEnumValue<T>()
@@ -358,9 +370,11 @@ namespace MakeFriendSolution.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetListOfSuggestions(Guid userId, [FromQuery] FilterUserViewModel filter)
         {
+
             var result = await _userApplication.GetSimilarityUsers(userId, filter);
 
-            return Ok(new {
+            return Ok(new
+            {
                 data = result.Item1,
                 pageTotal = result.Item2
             });
@@ -386,7 +400,7 @@ namespace MakeFriendSolution.Controllers
                 });
             }
 
-            user = await _userApplication.BidingUserRequest(user, request);
+            user = _userApplication.BidingUserRequest(user, request);
             try
             {
                 user.IsInfoUpdated = true;
@@ -417,7 +431,7 @@ namespace MakeFriendSolution.Controllers
         [HttpPost("filterFeatures")]
         public async Task<IActionResult> FilterFeatures([FromQuery] PagingRequest pagingRequest, [FromBody] List<FilterFeaturesRequest> requests)
         {
-            if(requests.Count == 0)
+            if (requests.Count == 0)
             {
                 var usersNotFilter = await _context.Users
                     .Where(x => x.Status == EUserStatus.Active && x.IsInfoUpdated)
@@ -442,11 +456,11 @@ namespace MakeFriendSolution.Controllers
 
             var pageTotal = data.Count / pagingRequest.PageSize;
 
-            var users = data
+            var users = data.OrderByDescending(x=>x.CreatedAt)
             .Skip((pagingRequest.PageIndex - 1) * pagingRequest.PageSize)
             .Take(pagingRequest.PageSize).ToList();
 
-            var response = await _userApplication.GetUserDisplay(users);
+            var response = await _userApplication.GetUserDisplayByUserResponse(users);
 
             return Ok(new
             {
@@ -455,489 +469,97 @@ namespace MakeFriendSolution.Controllers
             });
         }
 
-        private async Task<List<AppUser>> FilterFeatures(List<FilterFeaturesRequest> requests)
+        private async Task<List<UserResponse>> FilterFeatures(List<FilterFeaturesRequest> requests)
         {
-            //List<EBody> bodies = new List<EBody>();
             List<EGender> genders = new List<EGender>();
-            //List<EEducation> educations = new List<EEducation>();
-            //List<EReligion> religions = new List<EReligion>();
-            //List<ECook> cooks = new List<ECook>();
-            //List<ELikeTechnology> likeTechnologies = new List<ELikeTechnology>();
-            //List<ELikePet> likePets = new List<ELikePet>();
-            //List<EPlaySport> playSports = new List<EPlaySport>();
-            //List<ETravel> travels = new List<ETravel>();
-            //List<EGame> games = new List<EGame>();
-            //List<EShopping> shoppings = new List<EShopping>();
             List<ELocation> locations = new List<ELocation>();
-            //List<ECharacter> characters = new List<ECharacter>();
-            ////
-            //List<EFavoriteMovie> favoriteMovies = new List<EFavoriteMovie>();
-            //List<EAtmosphereLike> atmosphereLikes = new List<EAtmosphereLike>();
-            //List<EDrinkBeer> drinkBeers = new List<EDrinkBeer>();
-            //List<ESmoking> smokings = new List<ESmoking>();
-            //List<EMarriage> marriages = new List<EMarriage>();
             List<EJob> jobs = new List<EJob>();
             List<EAgeGroup> ageGroups = new List<EAgeGroup>();
+            List<Filter> filters = new List<Filter>();
 
             foreach (FilterFeaturesRequest item in requests)
             {
-                switch (item.feature)
+                switch (item.FeatureId)
                 {
-                    //case "body":
-                    //    if (!bodies.Any(x => x.ToString() == item.display))
-                    //    {
-                    //        if (Enum.TryParse(item.display.Trim(), out EBody body))
-                    //        {
-                    //            bodies.Add(body);
-                    //        }
-                    //    }
-                    //    break;
 
-                    case "gender":
-                        if (!genders.Any(x => x.ToString() == item.display))
-                        {
-                            if (Enum.TryParse(item.display.Trim(), out EGender gender))
-                            {
-                                genders.Add(gender);
-                            }
-                        }
+                    case -1:
+                        ageGroups.Add((EAgeGroup)item.ValueId);
                         break;
-                    //case "education":
-                    //    if (!educations.Any(x => x.ToString() == item.display))
-                    //    {
-                    //        if (Enum.TryParse(item.display.Trim(), out EEducation education))
-                    //        {
-                    //            educations.Add(education);
-                    //        }
-                    //    }
-                    //    break;
-                    //case "religion":
-                    //    if (!religions.Any(x => x.ToString() == item.display))
-                    //    {
-                    //        if (Enum.TryParse(item.display.Trim(), out EReligion religion))
-                    //        {
-                    //            religions.Add(religion);
-                    //        }
-                    //    }
-                    //    break;
-                    //case "cook":
-                    //    if (!cooks.Any(x => x.ToString() == item.display))
-                    //    {
-                    //        if (Enum.TryParse(item.display.Trim(), out ECook cook))
-                    //        {
-                    //            cooks.Add(cook);
-                    //        }
-                    //    }
-                    //    break;
-                    //case "likeTechnology":
-                    //    if (!likeTechnologies.Any(x => x.ToString() == item.display))
-                    //    {
-                    //        if (Enum.TryParse(item.display.Trim(), out ELikeTechnology likeTechnology))
-                    //        {
-                    //            likeTechnologies.Add(likeTechnology);
-                    //        }
-                    //    }
-                    //    break;
-                    //case "likePet":
-                    //    if (!likePets.Any(x => x.ToString() == item.display))
-                    //    {
-                    //        if (Enum.TryParse(item.display.Trim(), out ELikePet likePet))
-                    //        {
-                    //            likePets.Add(likePet);
-                    //        }
-                    //    }
-                    //    break;
-                    //case "playSport":
-                    //    if (!playSports.Any(x => x.ToString() == item.display))
-                    //    {
-                    //        if (Enum.TryParse(item.display.Trim(), out EPlaySport playSport))
-                    //        {
-                    //            playSports.Add(playSport);
-                    //        }
-                    //    }
-                    //    break;
-                    //case "travel":
-                    //    if (!travels.Any(x => x.ToString() == item.display))
-                    //    {
-                    //        if (Enum.TryParse(item.display.Trim(), out ETravel travel))
-                    //        {
-                    //            travels.Add(travel);
-                    //        }
-                    //    }
-                    //    break;
-                    //case "game":
-                    //    if (!games.Any(x => x.ToString() == item.display))
-                    //    {
-                    //        if (Enum.TryParse(item.display.Trim(), out EGame game))
-                    //        {
-                    //            games.Add(game);
-                    //        }
-                    //    }
-                    //    break;
-                    //case "shopping":
-                    //    if (!shoppings.Any(x => x.ToString() == item.display))
-                    //    {
-                    //        if (Enum.TryParse(item.display.Trim(), out EShopping shopping))
-                    //        {
-                    //            shoppings.Add(shopping);
-                    //        }
-                    //    }
-                    //    break;
-                    case "location":
-                        if (!locations.Any(x => x.ToString() == item.display))
-                        {
-                            if (Enum.TryParse(item.display.Trim(), out ELocation location))
-                            {
-                                locations.Add(location);
-                            }
-                        }
+                    case -2:
+                        genders.Add((EGender)item.ValueId);
                         break;
-                    //case "character":
-                    //    if (!characters.Any(x => x.ToString() == item.display))
-                    //    {
-                    //        if (Enum.TryParse(item.display.Trim(), out ECharacter character))
-                    //        {
-                    //            characters.Add(character);
-                    //        }
-                    //    }
-                    //    break;
 
-                    //    //
-                    //case "favoriteMovie":
-                    //    if (!favoriteMovies.Any(x => x.ToString() == item.display))
-                    //    {
-                    //        if (Enum.TryParse(item.display.Trim(), out EFavoriteMovie favoriteMovie))
-                    //        {
-                    //            favoriteMovies.Add(favoriteMovie);
-                    //        }
-                    //    }
-                    //    break;
-                    //case "atmosphereLike":
-                    //    if (!atmosphereLikes.Any(x => x.ToString() == item.display))
-                    //    {
-                    //        if (Enum.TryParse(item.display.Trim(), out EAtmosphereLike atmosphereLike))
-                    //        {
-                    //            atmosphereLikes.Add(atmosphereLike);
-                    //        }
-                    //    }
-                    //    break;
-                    //case "drinkBeer":
-                    //    if (!drinkBeers.Any(x => x.ToString() == item.display))
-                    //    {
-                    //        if (Enum.TryParse(item.display.Trim(), out EDrinkBeer drinkBeer))
-                    //        {
-                    //            drinkBeers.Add(drinkBeer);
-                    //        }
-                    //    }
-                    //    break;
-                    //case "smoking":
-                    //    if (!smokings.Any(x => x.ToString() == item.display))
-                    //    {
-                    //        if (Enum.TryParse(item.display.Trim(), out ESmoking smoking))
-                    //        {
-                    //            smokings.Add(smoking);
-                    //        }
-                    //    }
-                    //    break;
-                    //case "marriage":
-                    //    if (!marriages.Any(x => x.ToString() == item.display))
-                    //    {
-                    //        if (Enum.TryParse(item.display.Trim(), out EMarriage marriage))
-                    //        {
-                    //            marriages.Add(marriage);
-                    //        }
-                    //    }
-                    //    break;
-                    case "job":
-                        if (!jobs.Any(x => x.ToString() == item.display))
-                        {
-                            if (Enum.TryParse(item.display.Trim(), out EJob job))
-                            {
-                                jobs.Add(job);
-                            }
-                        }
-                        break;
-                    case "ageGroup":
-                        if (!ageGroups.Any(x => x.ToString() == item.display))
-                        {
-                            if (Enum.TryParse(item.display.Trim(), out EAgeGroup ageGroup))
-                            {
-                                ageGroups.Add(ageGroup);
-                            }
-                        }
-                        break;
                     default:
+                        if (!filters.Any(x => x.FeatureId == item.FeatureId))
+                            filters.Add(new Filter() { FeatureId = item.FeatureId, ValueId = new List<int>() });
+
+                        filters.First(x => x.FeatureId == item.FeatureId).ValueId.Add(item.ValueId);
+
                         break;
                 }
 
             }
 
-            var users = await _context.Users.Where(x => x.Status == EUserStatus.Active && x.IsInfoUpdated).ToListAsync(); 
+            var us = await _context.Users.Where(x => x.Status == EUserStatus.Active && x.IsInfoUpdated).ToListAsync();
             List<AppUser> filterUsers = new List<AppUser>();
-            //
 
-            if (jobs.Count > 0)
-            {
-                foreach (EJob item in jobs)
-                {
-                    var filter = users.Where(x => x.Job == item).ToList();
-                    filterUsers = filterUsers.Concat(filter)
-                                        .ToList();
-                }
-                users = filterUsers;
-                filterUsers = new List<AppUser>();
-            }
-            //
-
-
-            //if (marriages.Count > 0)
-            //{
-            //    foreach (EMarriage item in marriages)
-            //    {
-            //        var filter = users.Where(x => x.Marriage == item).ToList();
-            //        filterUsers = filterUsers.Concat(filter)
-            //                            .ToList();
-            //    }
-            //    users = filterUsers;
-            //    filterUsers = new List<AppUser>();
-            //}
-            ////
-
-
-            //if (smokings.Count > 0)
-            //{
-            //    foreach (ESmoking item in smokings)
-            //    {
-            //        var filter = users.Where(x => x.Smoking == item).ToList();
-            //        filterUsers = filterUsers.Concat(filter)
-            //                            .ToList();
-            //    }
-            //    users = filterUsers;
-            //    filterUsers = new List<AppUser>();
-            //}
-            ////
-
-            //if (drinkBeers.Count > 0)
-            //{
-            //    foreach (EDrinkBeer item in drinkBeers)
-            //    {
-            //        var filter = users.Where(x => x.DrinkBeer == item).ToList();
-            //        filterUsers = filterUsers.Concat(filter)
-            //                            .ToList();
-            //    }
-            //    users = filterUsers;
-            //    filterUsers = new List<AppUser>();
-            //}
-            ////
-
-            //if (atmosphereLikes.Count > 0)
-            //{
-            //    foreach (EAtmosphereLike item in atmosphereLikes)
-            //    {
-            //        var filter = users.Where(x => x.AtmosphereLike == item).ToList();
-            //        filterUsers = filterUsers.Concat(filter)
-            //                            .ToList();
-            //    }
-            //    users = filterUsers;
-            //    filterUsers = new List<AppUser>();
-            //}
-            ////
-
-            //if (favoriteMovies.Count > 0)
-            //{
-            //    foreach (EFavoriteMovie item in favoriteMovies)
-            //    {
-            //        var filter = users.Where(x => x.FavoriteMovie == item).ToList();
-            //        filterUsers = filterUsers.Concat(filter)
-            //                            .ToList();
-            //    }
-            //    users = filterUsers;
-            //    filterUsers = new List<AppUser>();
-            //}
-            ////
-
-            ////
-            //if (bodies.Count > 0)
-            //{
-            //    foreach (EBody item in bodies)
-            //    {
-            //        var filter = users.Where(x => x.Body == item).ToList();
-            //        filterUsers = filterUsers.Concat(filter)
-            //                            .ToList();
-            //    }
-            //    users = filterUsers;
-            //    filterUsers = new List<AppUser>();
-            //}
-            //
-            if(genders.Count > 0)
+            if (genders.Count > 0)
             {
                 foreach (EGender item in genders)
                 {
-                    var filter = users.Where(x => x.Gender == item).ToList();
+                    var filter = us.Where(x => x.Gender == item).ToList();
                     filterUsers = filterUsers.Concat(filter)
                                         .ToList();
                 }
-                users = filterUsers;
+                us = filterUsers;
                 filterUsers = new List<AppUser>();
             }
 
-            //
-            //if(educations.Count > 0)
-            //{
-            //    foreach (EEducation item in educations)
-            //    {
-            //        var filter = users.Where(x => x.Education == item).ToList();
-            //        filterUsers = filterUsers.Concat(filter)
-            //                            .ToList();
-            //    }
-            //    users = filterUsers;
-            //    filterUsers = new List<AppUser>();
-            //}
 
-            ////
-            //if(religions.Count > 0)
-            //{
-            //    foreach (EReligion item in religions)
-            //    {
-            //        var filter = users.Where(x => x.Religion == item).ToList();
-            //        filterUsers = filterUsers.Concat(filter)
-            //                            .ToList();
-            //    }
-            //    users = filterUsers;
-            //    filterUsers = new List<AppUser>();
-            //}
-
-            ////
-            //if(cooks.Count > 0)
-            //{
-            //    foreach (ECook item in cooks)
-            //    {
-            //        var filter = users.Where(x => x.Cook == item).ToList();
-            //        filterUsers = filterUsers.Concat(filter)
-            //                            .ToList();
-            //    }
-            //    users = filterUsers;
-            //    filterUsers = new List<AppUser>();
-            //}
-
-            ////
-            //if(likeTechnologies.Count > 0)
-            //{
-            //    foreach (ELikeTechnology item in likeTechnologies)
-            //    {
-            //        var filter = users.Where(x => x.LikeTechnology == item).ToList();
-            //        filterUsers = filterUsers.Concat(filter)
-            //                            .ToList();
-            //    }
-            //    users = filterUsers;
-            //    filterUsers = new List<AppUser>();
-            //}
-
-            ////
-            //if(likePets.Count > 0)
-            //{
-            //    foreach (ELikePet item in likePets)
-            //    {
-            //        var filter = users.Where(x => x.LikePet == item).ToList();
-            //        filterUsers = filterUsers.Concat(filter)
-            //                            .ToList();
-            //    }
-            //    users = filterUsers;
-            //    filterUsers = new List<AppUser>();
-            //}
-
-            ////
-            //if(playSports.Count > 0)
-            //{
-            //    foreach (EPlaySport item in playSports)
-            //    {
-            //        var filter = users.Where(x => x.PlaySport == item).ToList();
-            //        filterUsers = filterUsers.Concat(filter)
-            //                            .ToList();
-            //    }
-            //    users = filterUsers;
-            //    filterUsers = new List<AppUser>();
-            //}
-
-            ////
-            //if(travels.Count > 0)
-            //{
-            //    foreach (ETravel item in travels)
-            //    {
-            //        var filter = users.Where(x => x.Travel == item).ToList();
-            //        filterUsers = filterUsers.Concat(filter)
-            //                            .ToList();
-            //    }
-            //    users = filterUsers;
-            //    filterUsers = new List<AppUser>();
-            //}
-
-            ////
-            //if(games.Count > 0)
-            //{
-            //    foreach (EGame item in games)
-            //    {
-            //        var filter = users.Where(x => x.Game == item).ToList();
-            //        filterUsers = filterUsers.Concat(filter)
-            //                            .ToList();
-            //    }
-            //    users = filterUsers;
-            //    filterUsers = new List<AppUser>();
-            //}
-
-            ////
-            //if(shoppings.Count > 0)
-            //{
-            //    foreach (EShopping item in shoppings)
-            //    {
-            //        var filter = users.Where(x => x.Shopping == item).ToList();
-            //        filterUsers = filterUsers.Concat(filter)
-            //                            .ToList();
-            //    }
-            //    users = filterUsers;
-            //    filterUsers = new List<AppUser>();
-            //}
-
-            //
-            if(locations.Count > 0)
-            {
-                foreach (ELocation item in locations)
-                {
-                    var filter = users.Where(x => x.Location == item).ToList();
-                    filterUsers = filterUsers.Concat(filter)
-                                        .ToList();
-                }
-                users = filterUsers;
-                filterUsers = new List<AppUser>();
-            }
-
-            //
-            //if (characters.Count > 0)
-            //{
-            //    foreach (ECharacter item in characters)
-            //    {
-            //        var filter = users.Where(x => x.Character == item).ToList();
-            //        filterUsers = filterUsers.Concat(filter)
-            //                            .ToList();
-            //    }
-            //    users = filterUsers;
-            //    filterUsers = new List<AppUser>();
-            //}
-
-            //
             if (ageGroups.Count > 0)
             {
                 foreach (EAgeGroup item in ageGroups)
                 {
-                    var filter = users.Where(x => _userApplication.GetAgeGroup(x.Dob) == item).ToList();
+                    var filter = us.Where(x => _userApplication.GetAgeGroup(x.Dob) == item).ToList();
                     filterUsers = filterUsers.Concat(filter)
                                         .ToList();
                 }
-                users = filterUsers;
+                us = filterUsers;
                 filterUsers = new List<AppUser>();
             }
+
+
+            var users = (from i in us
+                                select new UserResponse(i, _storageService)
+                                ).ToList();
+
+            foreach (var item in users)
+            {
+                var features = await _featureApplication.GetFeatureResponseByUserId(item.Id);
+                item.Features = features.Item1;
+                //item.SearchFeatures = features.Item2;
+            }
+
+            foreach (var i in filters)
+            {
+                var fUsers = new List<UserResponse>();
+                foreach (var j in i.ValueId)
+                {
+                    foreach (var t in users)
+                    {
+                        foreach (var y in t.Features)
+                        {
+                            if (y.FeatureId == i.FeatureId && y.FeatureDetailId == j)
+                                fUsers.Add(t);
+                        }
+                    }
+                }
+
+                users = users.Intersect(fUsers).ToList();
+            }
+
             return users;
-        } 
+        }
 
         [AllowAnonymous]
         [HttpGet("features")]
@@ -1011,27 +633,11 @@ namespace MakeFriendSolution.Controllers
 
             var response = new
             {
-                //AtmosphereLike,
-                //Body,
-                //Character,
-                //DrinkBeer,
-                //Education,
-                //FavoriteMovie,
+
                 Gender,
                 FindPeople,
                 Job,
-                //LifeStyle,
                 Location,
-                //Marriage,
-                //MostValuable,
-                //Religion,
-                //Smoking,
-                //LikeTechnology,
-                //LikePet,
-                //PlaySport,
-                //Travel,
-                //Game,
-                //Shopping,
                 AgeGroup,
                 features
             };
@@ -1048,7 +654,7 @@ namespace MakeFriendSolution.Controllers
             foreach (var item in features)
             {
                 var featureDetailId = item.FeatureDetails.ToList()[random.Next(item.FeatureDetails.Count)].Id;
-                
+
                 var uf = new UserFeature()
                 {
                     FeatureDetailId = featureDetailId,
@@ -1081,5 +687,11 @@ namespace MakeFriendSolution.Controllers
             var users = _context.Users.Include(x => x.HaveFeatures).Take(2).ToList();
             return Ok(users);
         }
+    }
+
+    public class Filter
+    {
+        public int FeatureId { get; set; }
+        public List<int> ValueId { get; set; }
     }
 }

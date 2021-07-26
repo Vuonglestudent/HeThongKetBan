@@ -11,6 +11,7 @@ namespace MakeFriendSolution.Services
     {
         Task<string> SaveFile(IFormFile file);
         string GetFileUrl(string fileName);
+        string GetFileUrlWithoutDomain(string fileName);
 
         Task SaveFileAsync(Stream mediaBinaryStream, string fileName);
 

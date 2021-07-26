@@ -25,8 +25,11 @@ namespace MakeFriendSolution.Controllers
         private readonly IUserApplication _userApplication;
         private readonly IFeatureApplication _featureApplication;
         private readonly INotificationApplication _notificationApp;
+        private readonly IRelationshipApplication _relationshipApp;
 
-        public UsersController(MakeFriendDbContext context, IStorageService storageService, ISessionService sessionService, IUserApplication userApplication, IFeatureApplication featureApplication, INotificationApplication notificationApp)
+        public UsersController(MakeFriendDbContext context, IStorageService storageService,
+            ISessionService sessionService, IUserApplication userApplication, IFeatureApplication featureApplication,
+            INotificationApplication notificationApp, IRelationshipApplication relationshipApp)
         {
             _context = context;
             _storageService = storageService;
@@ -34,6 +37,7 @@ namespace MakeFriendSolution.Controllers
             _userApplication = userApplication;
             _featureApplication = featureApplication;
             _notificationApp = notificationApp;
+            _relationshipApp = relationshipApp;
         }
 
         /// <summary>
@@ -262,9 +266,19 @@ namespace MakeFriendSolution.Controllers
             var features = await _featureApplication.GetFeatureResponseByUserId(user.Id);
             respone.Features = features.Item1;
             respone.SearchFeatures = features.Item2;
+
+
+            try
+            {
+                respone.Relationship = await _relationshipApp.GetByUserId(userId);
+
+            }
+            catch (Exception)
+            {
+            }
+
             return Ok(respone);
         }
-    
 
         /// <summary>
         /// Follow người dùng
@@ -287,14 +301,6 @@ namespace MakeFriendSolution.Controllers
                     Message = "Can not read token"
                 });
             }
-
-            //if (sessionUser.UserId == userId)
-            //{
-            //    return BadRequest(new
-            //    {
-            //        Message = "Can not follow yourself"
-            //    });
-            //}
 
             var followed = await _context.Follows
                 .Where(x => x.FromUserId == sessionUser.UserId && x.ToUserId == userId)
@@ -325,7 +331,7 @@ namespace MakeFriendSolution.Controllers
                     Type = "follow"
                 };
                 var noticeRes = await _notificationApp.CreateNotification(nt);
-                if(noticeRes != null)
+                if (noticeRes != null)
                 {
                     await _notificationApp.SendNotification(noticeRes);
                 }
@@ -456,7 +462,7 @@ namespace MakeFriendSolution.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<UserDisplay>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetFriends(Guid userId)
+        public async Task<IActionResult> GetFriends(Guid userId, [FromQuery] PagingRequest request)
         {
             var sessionUser = _sessionService.GetDataFromToken();
             if (sessionUser == null)
@@ -473,7 +479,10 @@ namespace MakeFriendSolution.Controllers
             }
 
             var followers = await _context.Follows.Where(x => x.FromUserId == userId).Include(x => x.ToUser).ToListAsync();
-            var response = followers.Select(x => new UserDisplay(x.ToUser, _storageService));
+            var response = followers.Select(x => new UserDisplay(x.ToUser, _storageService))
+                .Skip((request.PageIndex - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .OrderByDescending(x => x.CreatedAt).ToList();
             foreach (var item in response)
             {
                 item.Followed = await _userApplication.IsFollowed(item.Id, sessionUser.UserId);
@@ -686,7 +695,7 @@ namespace MakeFriendSolution.Controllers
                 });
 
             var userInfo = _sessionService.GetDataFromToken();
-            if(userId == userInfo.UserId)
+            if (userId == userInfo.UserId)
             {
                 return BadRequest(new
                 {
@@ -694,7 +703,7 @@ namespace MakeFriendSolution.Controllers
                 });
             }
             var follow = await _context.Follows
-                .Where(x => (x.FromUserId == userId && x.ToUserId == userInfo.UserId) || 
+                .Where(x => (x.FromUserId == userId && x.ToUserId == userInfo.UserId) ||
                     (x.FromUserId == userInfo.UserId && x.ToUserId == userId))
                 .ToListAsync();
 
@@ -746,24 +755,63 @@ namespace MakeFriendSolution.Controllers
             });
         }
 
-        [HttpPut("hub")]
+        [HttpPut("position")]
         [Authorize]
-        public async Task<IActionResult> SaveConnectionId([FromQuery]Guid userId, [FromForm] string connectionId)
+        public async Task<IActionResult> SavePosition([FromBody] SavePositionRequest request)
         {
-            var userInfo = _sessionService.GetDataFromToken();
-
-            if (userInfo.UserId != userId || string.IsNullOrEmpty(connectionId)) {
-                return BadRequest();
+            try
+            {
+                await _userApplication.SavePostion(request);
+                return Ok(new { Message = "Saved successful" });
             }
-
-            var user = await _userApplication.GetById(userId);
-
-            user.ConnectionId = connectionId;
-
-            await _userApplication.UpdateUser(user, false);
-
-            return Ok(new { Message = "Saved connectionId"});
+            catch (Exception e)
+            {
+                return BadRequest(new { Message = e.Message });
+            }
         }
 
+        [HttpPost("around")]
+        [Authorize]
+        public async Task<IActionResult> FindAround(FindAroundRequest request)
+        {
+            try
+            {
+                var users = await _userApplication.FindAround(request);
+                return Ok(users);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { Message = e.Message });
+            }
+        }
+
+        [HttpGet("friends")]
+        [Authorize]
+        public async Task<IActionResult> SearchFriend([FromQuery] string name)
+        {
+            var userInfo = _sessionService.GetDataFromToken();
+            try
+            {
+                var users = await _userApplication.SearchFriend(userInfo.UserId, name);
+                return Ok(users);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { Message = e.Message });
+            }
+        }
+
+        [HttpGet("display/{userId}")]
+        public async Task<IActionResult> GetDisplayUser(Guid userId)
+        {
+            try
+            {
+                return Ok(await _userApplication.GetUserDisplayById(userId));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { Message = e.Message });
+            }
+        }
     }
 }

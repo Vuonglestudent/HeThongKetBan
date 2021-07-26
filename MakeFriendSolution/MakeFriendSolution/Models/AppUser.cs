@@ -12,7 +12,6 @@ namespace MakeFriendSolution.Models
     public class AppUser
     {
         public Guid Id { get; set; }
-        public string ConnectionId { get; set; }
         public string Email { get; set; }
         public string UserName { get; set; }
         public string PhoneNumber { get; set; }
@@ -30,6 +29,10 @@ namespace MakeFriendSolution.Models
         public int NumberOfFiends { get; set; }
         public int NumberOfLikes { get; set; }
         public int NumberOfImages { get; set; }
+
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+        public bool IsUpdatePosition { get; set; }
 
         public bool IsInfoUpdated { get; set; }
         public string PasswordForgottenCode { get; set; }
@@ -67,9 +70,15 @@ namespace MakeFriendSolution.Models
 
         public ICollection<UserFeature> HaveFeatures { get; set; }
         public ICollection<SearchFeature> SearchFeatures { get; set; }
+        public ICollection<Feedback> Feedbacks { get; set; }
+
+        public ICollection<Relationship> RelationshipFrom { get; set; }
+        public ICollection<Relationship> RelationshipTo { get; set; }
 
         [NotMapped]
         public double Point { get; set; } = 0;
+        [NotMapped]
+        public double Distance { get; set; }
 
         public AppUser(AppUser user)
         {

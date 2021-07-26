@@ -1,5 +1,6 @@
 ﻿using MakeFriendSolution.EF;
 using MakeFriendSolution.HubConfig;
+using MakeFriendSolution.HubConfig.Models;
 using MakeFriendSolution.Models;
 using MakeFriendSolution.Models.ViewModels;
 using MakeFriendSolution.Services;
@@ -53,42 +54,38 @@ namespace MakeFriendSolution.Application
                                        UserId = i.Id
                                    }).FirstOrDefaultAsync();
 
-            //try
-            //{
-            //    var a = _storageService.GetFileUrl(imagePath.AvatarPath);
-            //    byte[] imageBits = System.IO.File.ReadAllBytes($"./{a}");
-            //    r.Avatar = Convert.ToBase64String(imageBits);
-            //    r.HasAvatar = true;
-            //}
-            //catch
-            //{
-            //    r.HasAvatar = false;
-            //    r.Avatar = imagePath.AvatarPath;
-            //}
+
             r.Avatar = _storageService.GetFileUrl(imagePath.AvatarPath);
             r.FromId = notification.FromId;
             r.ToId = notification.ToId;
             r.Id = notification.Id;
             r.FullName = imagePath.FullName;
             r.CreatedAt = notification.CreatedAt;
-            r.Type = "notification";
 
             if(notification.Type == "follow")
             {
                 r.Content =" đã theo dõi bạn.";
+                r.Type = "follow";
             }
             else if(notification.Type == "likeImage")
             {
                 r.Content = " đã thích hình ảnh của bạn.";
+                r.Type = "likeImage";
             }
             else if(notification.Type == "like")
             {
                 r.Content = " đã bày tỏ cảm xúc với bạn.";
+                r.Type = "like";
+            }
+            else if(notification.Type == "relationship")
+            {
+                r.Content = " đã tạo quan hệ với bạn.";
+                r.Type = "relationship";
             }
             
             return r;
         }
-
+        
         public async Task<bool> DeleteNotification(int id)
         {
             var notice = await _context.Notifications.FindAsync(id);
@@ -129,12 +126,28 @@ namespace MakeFriendSolution.Application
 
         public async Task SendNotification(NotificationResponse notification)
         {
-            var connectionId = await(from c in _context.Users
-                                     where c.Id == notification.ToId
-                                     select c.ConnectionId).FirstOrDefaultAsync();
+            var receiver = UserConnection.Get(notification.ToId);
 
+            if (receiver == null)
+                return;
 
-            await _hub.Clients.Clients(connectionId).SendAsync("transferData", notification);
+            try
+            {
+                await _hub.Clients.Clients(receiver.Select(x=>x.ConnectionId).ToList()).SendAsync("notification", notification);
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        public async Task DeleteFromUseId(Guid userId)
+        {
+            var notis = await _context.Notifications
+                .Where(x => (x.FromId == userId || x.ToId == userId) && x.Type == "relationship" )
+                .ToListAsync();
+
+            _context.Notifications.RemoveRange(notis);
+            await _context.SaveChangesAsync();
         }
 
         private class AvatarResponse

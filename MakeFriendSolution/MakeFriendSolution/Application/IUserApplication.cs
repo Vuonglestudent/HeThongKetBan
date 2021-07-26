@@ -10,6 +10,10 @@ namespace MakeFriendSolution.Application
 {
     public interface IUserApplication
     {
+        Task<UserDisplay> GetUserDisplayById(Guid userId);
+        Task<List<UserDisplay>> SearchFriend(Guid userId, string name);
+        public Task<List<UserDisplay>> GetUserDisplayByUserResponse(List<UserResponse> users);
+        Task<List<UserDisplay>> FindAround(FindAroundRequest request);
         Task<AppUser> GetById(Guid id);
 
         Task<AppUser> UpdateUser(AppUser user, bool isUpdateScore);
@@ -22,7 +26,7 @@ namespace MakeFriendSolution.Application
 
         Task<bool> GetBlockStatus(Guid currentUserId, Guid toUserId);
 
-        //int CalculateAge(DateTime birthDay);
+        Task SavePostion(SavePositionRequest request);
 
         void FilterUers(ref List<AppUser> users, FilterUserViewModel filter);
 
@@ -30,7 +34,7 @@ namespace MakeFriendSolution.Application
 
         EAgeGroup GetAgeGroup(DateTime birthDay);
 
-        Task<AppUser> BidingUserRequest(AppUser user, UserRequest request);
+        AppUser BidingUserRequest(AppUser user, UserRequest request);
 
         Task<bool> IsExist(Guid userId);
 
@@ -47,6 +51,7 @@ namespace MakeFriendSolution.Application
         Task<Tuple<List<UserDisplay>, int>> GetSimilarityScores(Guid userId, FilterUserViewModel request);
 
         Task<Tuple<List<UserDisplay>, int>> GetSimilarityUsers(Guid userId, FilterUserViewModel request);
+
 
     }
 }

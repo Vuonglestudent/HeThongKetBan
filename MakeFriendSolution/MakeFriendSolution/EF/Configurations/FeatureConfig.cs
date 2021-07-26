@@ -15,7 +15,6 @@ namespace MakeFriendSolution.EF.Configurations
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).UseIdentityColumn();
             builder.Property(x => x.Name).IsRequired();
-            builder.Property(x => x.IsCalculated).HasDefaultValue(1);
             builder.Property(x => x.WeightRate).HasDefaultValue(1);
         }
     }

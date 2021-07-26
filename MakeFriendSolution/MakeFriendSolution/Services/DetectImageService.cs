@@ -1,6 +1,7 @@
 ﻿using MakeFriendSolution.Models;
 using MakeFriendSolution.Models.ViewModels;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
@@ -15,9 +16,16 @@ namespace MakeFriendSolution.Services
 {
     public class DetectImageService : IDetectImageService
     {
+        private readonly IConfiguration _config;
+        private string urlService;
+        public DetectImageService(IConfiguration config)
+        {
+            _config = config;
+            urlService = _config["PythonService"];
+        }
         public DetectImageResponse DetectImage(string fileName)
         {
-            var client = new RestClient("http://hieuit.tech/predict-image");
+            var client = new RestClient(urlService + "/predict-image");
             client.Timeout = -1;
             var request = new RestRequest(Method.POST);
             request.AddHeader("Content-Type", "multipart/form-data");

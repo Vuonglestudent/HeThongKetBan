@@ -48,13 +48,14 @@ namespace MakeFriendSolution.Controllers
         /// Lấy thông tin user bằng ID
         /// </summary>
         /// <param name="userId">ID người dùng</param>
+        /// <param name="request"></param>
         /// <returns></returns>
         [AllowAnonymous]
         [HttpGet("user/{userId}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ImageResponse>))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetImageByUserId(Guid userId)
+        public async Task<IActionResult> GetImageByUserId(Guid userId, [FromQuery] PagingRequest request)
         {
             var isExist = await _context.Users.AnyAsync(x => x.Id == userId);
             if (!isExist)
@@ -64,7 +65,13 @@ namespace MakeFriendSolution.Controllers
                     Message = "Can not find User with id = " + userId
                 });
             }
-            var images = await _context.ThumbnailImages.Where(x => x.UserId == userId && x.Status == ImageStatus.Approved).ToListAsync();
+            var images = await _context.ThumbnailImages
+                .Where(x => x.UserId == userId && x.Status == ImageStatus.Approved)
+                .OrderByDescending(x=>x.CreatedAt)
+                .Skip((request.PageIndex - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .ToListAsync();
+
             var errorImages = new List<ThumbnailImage>();
             var response = new List<ImageResponse>();
             foreach (var item in images)
@@ -194,10 +201,10 @@ namespace MakeFriendSolution.Controllers
                         image.ImagePath = await _storageService.SaveFile(request.Images[i]);
                         try
                         {
-                            var score = _detectService.DetectImage("." + _storageService.GetFileUrl(image.ImagePath));
+                            var score = _detectService.DetectImage("." + _storageService.GetFileUrlWithoutDomain(image.ImagePath));
                             isOk = await _imageScoreApplication.ValidateImage(score);
                         }
-                        catch (Exception)
+                        catch (Exception e)
                         {
                             Console.WriteLine("Không thể kết nối đến detect image service.");
                             isOk = true;
@@ -237,7 +244,7 @@ namespace MakeFriendSolution.Controllers
                     image.Status = ImageStatus.Approved;
 
                     newImages.Add(image);
-                }
+                }   
             }
 
             user.NumberOfImages += (newImages.Count - notOk);
@@ -265,7 +272,7 @@ namespace MakeFriendSolution.Controllers
             else
             {
                 Approved = false;
-                message = "Chúng tôi nhận thấy hình ảnh của bạn có thể đã vi phạm chuẩn mực của chúng tôi, xin lỗi vì sự bất tiện này!";
+                message = "Hình ảnh có thể đã vi phạm chuẩn mực của chúng tôi, có thể cần kiểm duyệt, xin lỗi vì sự bất tiện này!";
             }
 
             return Ok(new
@@ -392,7 +399,6 @@ namespace MakeFriendSolution.Controllers
         [HttpPut("Approved/{imageId}")]
         public async Task<IActionResult> ApprovedImage(int imageId)
         {
-            return Ok();
             if (await _imageApplication.ApproveImage(imageId))
                 return Ok();
             else
@@ -403,7 +409,6 @@ namespace MakeFriendSolution.Controllers
         [HttpPut("BlockOut/{imageId}")]
         public async Task<IActionResult> BlockOutImage(int imageId)
         {
-            return Ok();
             if (await _imageApplication.BlockOutImage(imageId))
                 return Ok();
             else

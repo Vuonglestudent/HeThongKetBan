@@ -329,7 +329,7 @@ namespace MakeFriendSolution.Controllers
             {
                 return BadRequest(new
                 {
-                    Message = "UserName or Password is not correct!"
+                    Message = "Tên đăng nhập hoặc mật khẩu không chính xác!"
                 });
             }
 
@@ -337,7 +337,7 @@ namespace MakeFriendSolution.Controllers
             {
                 return BadRequest(new
                 {
-                    Message = "Please login with " + user.TypeAccount.ToString()
+                    Message = "Vui lòng đăng nhập với tài khoản " + user.TypeAccount.ToString()
                 });
             }
 
@@ -345,7 +345,7 @@ namespace MakeFriendSolution.Controllers
             {
                 return BadRequest(new
                 {
-                    Message = "UserName or Password is not correct!"
+                    Message = "Tên đăng nhập hoặc mật khẩu không chính xác!"
                 });
             }
 
@@ -371,7 +371,7 @@ namespace MakeFriendSolution.Controllers
             {
                 return BadRequest(new
                 {
-                    Message = "Your account has been locked!"
+                    Message = "Tài khoản của bạn đã bị khóa bởi quản trị viên!"
                 });
             }
 
@@ -395,10 +395,10 @@ namespace MakeFriendSolution.Controllers
         /// <param name="request">Facebook login info</param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost("facebook")]
+        [HttpPost("social")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponse))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
-        public IActionResult FacebookLogin([FromForm] FacebookLoginRequest request)
+        public IActionResult FacebookLogin([FromForm] SocialLoginRequest request)
         {
             var user = _context.Users.Where(x => x.Email == request.Email.Trim()).FirstOrDefault();
 
@@ -406,7 +406,7 @@ namespace MakeFriendSolution.Controllers
             if (user == null)
             {
                 var newUser = new AppUser()
-                { 
+                {
                     NumberOfFiends = 0,
                     NumberOfImages = 0,
                     NumberOfLikes = 0,
@@ -416,9 +416,22 @@ namespace MakeFriendSolution.Controllers
                     UserName = request.Email,
                     AvatarPath = request.Avatar,
                     IsInfoUpdated = false,
-                    TypeAccount = ETypeAccount.Facebook,
                     PassWord = Guid.NewGuid().ToString()
                 };
+
+                switch (request.Provider.ToLower())
+                {
+                    case "facebook":
+                        newUser.TypeAccount = ETypeAccount.Facebook;
+                        break;
+
+                    case "google":
+                        newUser.TypeAccount = ETypeAccount.Google;
+                        break;
+
+                    default:
+                        return BadRequest(new { Message = "Provider is not correct" });
+                }
 
                 var mailchimp = new MailChimpModel()
                 {
@@ -450,7 +463,7 @@ namespace MakeFriendSolution.Controllers
                 {
                     return BadRequest(new
                     {
-                        Message = "Your account has been locked!"
+                        Message = "Tài khoản của bạn đã bị khóa bởi quản trị viên!"
                     });
                 }
 
@@ -463,6 +476,7 @@ namespace MakeFriendSolution.Controllers
                 return Ok(userResponse);
             }
         }
+
 
 
         /// <summary>
@@ -506,20 +520,20 @@ namespace MakeFriendSolution.Controllers
                 //    Name = request.FullName
                 //};
 
-                
-                //try
-                //{
-                //    await _mailchimpService.Subscribe(mailchimp);
-                //    _context.Users.Add(user);
-                //    await _context.SaveChangesAsync();
-                //}
-                //catch (Exception e)
-                //{
-                //    return BadRequest(new
-                //    {
-                //        Message = e.InnerException
-                //    });
-                //}
+
+                try
+                {
+                    //await _mailchimpService.Subscribe(mailchimp);
+                    _context.Users.Add(user);
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception e)
+                {
+                    return BadRequest(new
+                    {
+                        Message = e.InnerException
+                    });
+                }
                 _loginInfo = new LoginInfo()
                 {
                     Email = user.Email,
@@ -620,24 +634,12 @@ namespace MakeFriendSolution.Controllers
 
         private Object GetForgotPasswordUserResponse(AppUser user)
         {
-            var avatarPath = user.AvatarPath;
-            bool hasAvatar = false;
-            try
-            {
-                byte[] imageBits = System.IO.File.ReadAllBytes($"./{_storageService.GetFileUrl(user.AvatarPath)}");
-                avatarPath = Convert.ToBase64String(imageBits);
-                hasAvatar = true;
-            }
-            catch
-            {
-            }
-
+            var avatarPath = _storageService.GetFileUrl(user.AvatarPath);
             return new
             {
                 Email = user.Email,
                 FullName = user.FullName,
                 AvatarPath = avatarPath,
-                HasAvatar = hasAvatar
             };
         }
 
@@ -673,7 +675,7 @@ namespace MakeFriendSolution.Controllers
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Issuer"],
                 claims,
-                expires: DateTime.Now.AddMinutes(120),
+                expires: DateTime.Now.AddYears(1),
                 signingCredentials: credentials
             );
 

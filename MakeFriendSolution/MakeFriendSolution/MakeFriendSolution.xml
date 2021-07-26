@@ -76,7 +76,7 @@
             <param name="request">Thông tin đăng nhập</param>
             <returns></returns>
         </member>
-        <member name="M:MakeFriendSolution.Controllers.AuthenticatesController.FacebookLogin(MakeFriendSolution.Models.ViewModels.FacebookLoginRequest)">
+        <member name="M:MakeFriendSolution.Controllers.AuthenticatesController.FacebookLogin(MakeFriendSolution.Models.ViewModels.SocialLoginRequest)">
             <summary>
             Đăng nhập với tài khoản facebook
             </summary>
@@ -137,11 +137,12 @@
             <param name="friendId">ID của bạn bè</param>
             <returns></returns>
         </member>
-        <member name="M:MakeFriendSolution.Controllers.ImagesController.GetImageByUserId(System.Guid)">
+        <member name="M:MakeFriendSolution.Controllers.ImagesController.GetImageByUserId(System.Guid,MakeFriendSolution.Models.ViewModels.PagingRequest)">
             <summary>
             Lấy thông tin user bằng ID
             </summary>
             <param name="userId">ID người dùng</param>
+            <param name="request"></param>
             <returns></returns>
         </member>
         <member name="M:MakeFriendSolution.Controllers.ImagesController.GetById(System.Int32)">
@@ -257,7 +258,7 @@
             <param name="userId"></param>
             <returns></returns>
         </member>
-        <member name="M:MakeFriendSolution.Controllers.UsersController.GetFriends(System.Guid)">
+        <member name="M:MakeFriendSolution.Controllers.UsersController.GetFriends(System.Guid,MakeFriendSolution.Models.ViewModels.PagingRequest)">
             <summary>
             Lấy danh sách bạn bè
             </summary>

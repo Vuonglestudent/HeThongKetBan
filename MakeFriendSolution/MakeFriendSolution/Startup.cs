@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -50,7 +51,7 @@ namespace MakeFriendSolution
             {
                 options.AddPolicy("CorsPolicy",
                     builder => builder
-                    .WithOrigins("https://localhost:4200", "http://localhost:4200", "http://hieuit.tech:5200", "https://hieuit.tech:5200", "http://hieuit.tech", "https://hieuit.tech")
+                    .WithOrigins("http://zinger.local:4200", "http://192.168.1.5", "https://localhost:4200", "http://localhost:4200", "http://hieuit.tech", "https://hieuit.tech")
                     //.AllowAnyOrigin()
                     .AllowAnyMethod()
                     .AllowAnyHeader()
@@ -61,7 +62,9 @@ namespace MakeFriendSolution
             services.AddSignalR();
             
             services.AddDbContext<MakeFriendDbContext>(options =>
-    options.UseSqlServer(Configuration.GetConnectionString("MakeFriendConnection")));
+                //options.UseSqlServer(Configuration.GetConnectionString("MakeFriendConnection")
+                options.UseMySql(Configuration.GetConnectionString("MakeFriendConnection")
+                ));
 
             //Declare DI
             services.AddScoped<IStorageService, FileStorageService>();
@@ -75,6 +78,15 @@ namespace MakeFriendSolution
             services.AddScoped<IDetectImageService, DetectImageService>();
             services.AddScoped<IImageScoreApplication, ImageScoreApplication>();
             services.AddScoped<INotificationApplication, NotificationApplication>();
+            services.AddScoped<IFeedbackApplication, FeedbackApplication>();
+            services.AddScoped<IRelationshipApplication, RelationshipApplication>();
+
+            services.Configure<FormOptions>(options =>
+            {
+                options.ValueLengthLimit = int.MaxValue; //not recommended value
+                options.MultipartBodyLengthLimit = long.MaxValue;
+            });
+
             services.AddControllers()
                 .AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
@@ -134,7 +146,6 @@ namespace MakeFriendSolution
                 c.IncludeXmlComments(cmlCommentFullPath);
             });
 
-
             //add Session
             services.AddDistributedMemoryCache();
 
@@ -188,7 +199,6 @@ namespace MakeFriendSolution
                 RequestPath = "/user-content"
             });
             //
-
 
             app.UseRouting();
 

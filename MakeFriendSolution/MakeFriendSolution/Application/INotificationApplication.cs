@@ -13,5 +13,6 @@ namespace MakeFriendSolution.Application
         Task<bool> DeleteNotification(int id);
         Task SendNotification(NotificationResponse notification);
         Task<List<NotificationResponse>> GetNotifications(NotificationRequest request);
+        Task DeleteFromUseId(Guid userId);
     }
 }

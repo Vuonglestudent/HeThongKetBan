@@ -57,5 +57,10 @@ namespace MakeFriendSolution.Services
             await SaveFileAsync(file.OpenReadStream(), fileName);
             return fileName;
         }
+
+        public string GetFileUrlWithoutDomain(string fileName)
+        {
+            return $"/{USER_CONTENT_FOLDER_NAME}/{fileName}";
+        }
     }
 }

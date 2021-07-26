@@ -37,7 +37,7 @@ namespace MakeFriendSolution.Models.ViewModels
             Dob = user.Dob;
             FindPeople = user.FindPeople.ToString();
             FindAgeGroup = user.FindAgeGroup.ToString();
-
+            CreatedAt = user.CreatedAt;
             //GetImagePath(user);
             AvatarPath = storageService.GetFileUrl(user.AvatarPath);
         }
@@ -98,6 +98,8 @@ namespace MakeFriendSolution.Models.ViewModels
         public string Location { get; set; }
         public string FindPeople { get; set; }
         public string FindAgeGroup { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public RelationshipResponse Relationship { get; set; }
         public List<FeatureResponse> Features { get; set; }
         public List<FeatureResponse> SearchFeatures { get; set; }
     }

@@ -293,10 +293,10 @@ namespace MakeFriendSolution.Application
             }
             try
             {
-                await Save();
+                await _context.SaveChangesAsync();
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return false;
             }
@@ -345,6 +345,9 @@ namespace MakeFriendSolution.Application
             {
                 try
                 {
+                    if (item.FeatureDetailId == -1)
+                        continue;
+
                     await UpdateUserFeature(userId, item.FeatureId, item.FeatureDetailId);
                 }
                 catch (Exception)
@@ -359,6 +362,9 @@ namespace MakeFriendSolution.Application
         {
             foreach (var item in searchFeatures)
             {
+                if (item.FeatureDetailId == -1)
+                    continue;
+
                 try
                 {
                     await UpdateSearchFeature(userId, item.FeatureId, item.FeatureDetailId);

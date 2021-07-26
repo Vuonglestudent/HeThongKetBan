@@ -7,6 +7,7 @@ using MakeFriendSolution.HubConfig;
 using MakeFriendSolution.Models;
 using MakeFriendSolution.Models.ViewModels;
 using MakeFriendSolution.Services;
+using MakeFriendSolution.HubConfig.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -42,7 +43,7 @@ namespace MakeFriendSolution.Controllers
         [Authorize]
         [HttpPost()]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ChatResponse))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]  
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         public async Task<IActionResult> Post([FromForm] CreateMessageRequest request)
         {
             var result = await SaveMessage(request);
@@ -64,14 +65,28 @@ namespace MakeFriendSolution.Controllers
                 SentAt = result.SentAt,
                 Id = result.Id,
                 FullName = display.FullName,
-                Avatar = display.AvatarPath
+                Avatar = display.AvatarPath,
+                FilePaths = result.FilePaths,
+                MessageType = result.MessageType
             };
+
             
-            await _hub.Clients.Clients(receiver.ConnectionId, sender.ConnectionId).SendAsync("transferData", response);
+            //await _hub.Clients.Clients(receiver.ConnectionId, sender.ConnectionId).SendAsync("transferData", response);
+            await SendMessage(sender.Id, receiver.Id, response);
 
             return Ok(new { Message = "Request complete!" });
         }
 
+        private async Task SendMessage(Guid senderId, Guid receiverId, ChatResponse messageResponse)
+        {
+            var sender = UserConnection.Get(senderId);
+            var receiver = UserConnection.Get(receiverId);
+
+            if (receiver == null)
+                await _hub.Clients.Clients(sender.Select(x => x.ConnectionId).ToList()).SendAsync("messageResponse", messageResponse);
+            else
+                await _hub.Clients.Clients(sender.Select(x => x.ConnectionId).ToList().Concat(receiver.Select(x => x.ConnectionId).ToList()).ToList()).SendAsync("messageResponse", messageResponse);
+        }
 
         /// <summary>
         /// Lấy tin nhắn giữa hai người
@@ -93,7 +108,7 @@ namespace MakeFriendSolution.Controllers
 
             foreach (var item in messages)
             {
-                MessageResponse res = new MessageResponse(item);
+                MessageResponse res = new MessageResponse(item, _storageService);
                 if (item.SenderId == request.SenderId)
                 {
                     res.Type = "sent";
@@ -130,7 +145,7 @@ namespace MakeFriendSolution.Controllers
 
             foreach (var item in recentMessages)
             {
-                var m = new MessageResponse(item);
+                var m = new MessageResponse(item, _storageService);
                 if (item.SenderId == userId)
                 {
                     m.Type = "sent";
@@ -216,14 +231,14 @@ namespace MakeFriendSolution.Controllers
                 .Where(x => (x.SenderId == userId && x.ReceiverId == friendId)
                     || (x.SenderId == friendId && x.ReceiverId == friendId))
                 .OrderByDescending(x => x.SentAt)
-                //.Take(20)
+                .Take(20)
                 .ToListAsync();
 
             List<MessageResponse> messageResponses = new List<MessageResponse>();
 
             foreach (var item in messages)
             {
-                MessageResponse res = new MessageResponse(item);
+                MessageResponse res = new MessageResponse(item, _storageService);
                 if (item.SenderId == userId)
                 {
                     res.Type = "sent";
@@ -252,14 +267,32 @@ namespace MakeFriendSolution.Controllers
             //    return null;
             //}
 
+
             var newMessage = new HaveMessage()
             {
                 SenderId = message.SenderId,
                 ReceiverId = message.ReceiverId,
                 Content = message.Content,
-                SentAt = DateTime.Now
+                SentAt = DateTime.Now,
+                MessageType = "text"
             };
 
+            string result = "";
+            List<string> fileNames = new List<string>();
+            var res = new List<string>();
+            if (message.Files != null && message.Files.Count > 0)
+            {
+                newMessage.MessageType = "image";
+                foreach (var item in message.Files)
+                {
+                    string s = await _storageService.SaveFile(item);
+                    res.Add(_storageService.GetFileUrl(s));
+                    fileNames.Add(s);
+                }
+                result = String.Join(",", fileNames.ToArray());
+            }
+
+            newMessage.FilePath = result;
             try
             {
                 _context.HaveMessages.Add(newMessage);
@@ -269,6 +302,7 @@ namespace MakeFriendSolution.Controllers
             {
                 return null;
             }
+            newMessage.FilePaths = res;
             return newMessage;
         }
     }

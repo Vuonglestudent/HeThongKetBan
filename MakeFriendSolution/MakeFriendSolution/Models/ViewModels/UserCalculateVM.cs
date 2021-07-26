@@ -10,6 +10,7 @@ namespace MakeFriendSolution.Models.ViewModels
     {
         public Guid UserId { get; set; }
         public int Age { get; set; }
+        public DateTime Dob { get; set; }
         public EGender Gender { get; set; }
         public double Point { get; set; } = 0;
         public List<FeatureViewModel> FeatureViewModels { get; set; }

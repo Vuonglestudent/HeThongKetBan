@@ -52,7 +52,7 @@ namespace MakeFriendSolution.Application
             return await _context.Follows.AnyAsync(x => x.FromUserId == currentUserId && x.ToUserId == userId);
         }
 
-        public async Task<bool> GetBlockStatus(Guid currentUserId, Guid toUserId)   
+        public async Task<bool> GetBlockStatus(Guid currentUserId, Guid toUserId)
         {
             return await _context.BlockUsers.AnyAsync(x => x.FromUserId == currentUserId && x.ToUserId == toUserId && x.IsLock);
         }
@@ -78,7 +78,8 @@ namespace MakeFriendSolution.Application
 
             if (filter.FullName != null && filter.FullName.Trim() != "")
             {
-                users = users.Where(x => x.FullName.Contains(filter.FullName.Trim())).ToList();
+                string name = filter.FullName.NonUnicode().ToLower().Trim();
+                users = users.Where(x => x.FullName.NonUnicode().ToLower().Contains(name)).ToList();
             }
 
             if (filter.Gender != null && filter.Gender.Trim() != "")
@@ -87,15 +88,23 @@ namespace MakeFriendSolution.Application
                     users = users.Where(x => x.Gender == gender).ToList();
             }
 
-            if (filter.FromAge != 0)
-            {
-                users = users.Where(x => CalculateAge(x.Dob) >= filter.FromAge).ToList();
-            }
 
-            if (filter.ToAge > filter.FromAge)
+            if (filter.AgeGroup != null && filter.AgeGroup != "")
             {
-                users = users.Where(x => CalculateAge(x.Dob) <= filter.ToAge).ToList();
+                if (Enum.TryParse(filter.AgeGroup.Trim(), out EAgeGroup ageGroup))
+                {
+                    users = users.Where(x => GetAgeGroup(x.Dob) == ageGroup).ToList();
+                }
             }
+            //if (filter.FromAge != 0)
+            //{
+            //    users = users.Where(x => CalculateAge(x.Dob) >= filter.FromAge).ToList();
+            //}
+
+            //if (filter.ToAge > filter.FromAge)
+            //{
+            //    users = users.Where(x => CalculateAge(x.Dob) <= filter.ToAge).ToList();
+            //}
         }
 
         public async Task<List<UserDisplay>> GetUserDisplay(List<AppUser> users, bool nonImage = false)
@@ -126,6 +135,31 @@ namespace MakeFriendSolution.Application
             return userDisplays;
         }
 
+        public async Task<List<UserDisplay>> GetUserDisplayByUserResponse(List<UserResponse> users)
+        {
+            var userDisplays = new List<UserDisplay>();
+            //Get Session user - Check login
+            var sessionUser = _sessionService.GetDataFromToken();
+            if (sessionUser == null)
+            {
+                sessionUser = new LoginInfo()
+                {
+                    UserId = Guid.NewGuid()
+                };
+            }
+
+            foreach (var user in users)
+            {
+                var userDisplay = new UserDisplay(user);
+
+                userDisplay.Followed = await IsFollowed(user.Id, sessionUser.UserId);
+                userDisplay.Favorited = await IsLiked(user.Id, sessionUser.UserId);
+
+                userDisplays.Add(userDisplay);
+            }
+            return userDisplays;
+        }
+
         public async Task<UserResponse> GetUserResponse(AppUser user)
         {
             var Features = await _featureApplication.GetFeatureResponseByUserId(user.Id);
@@ -137,7 +171,7 @@ namespace MakeFriendSolution.Application
             return userResponse;
         }
 
-        public async Task<AppUser> BidingUserRequest(AppUser user, UserRequest request)
+        public AppUser BidingUserRequest(AppUser user, UserRequest request)
         {
             if (Enum.TryParse(request.Gender, out EGender gender))
             {
@@ -154,112 +188,18 @@ namespace MakeFriendSolution.Application
                 user.FindAgeGroup = findAgeGroup;
             }
 
-            //if (Enum.TryParse(request.Cook, out ECook cook))
-            //{
-            //    user.Cook = cook;
-            //}
-
-            //if (Enum.TryParse(request.Game, out EGame game))
-            //{
-            //    user.Game = game;
-            //}
-
-            //if (Enum.TryParse(request.Travel, out ETravel travel))
-            //{
-            //    user.Travel = travel;
-            //}
-
-            //if (Enum.TryParse(request.Shopping, out EShopping shopping))
-            //{
-            //    user.Shopping = shopping;
-            //}
 
             if (Enum.TryParse(request.Location, out ELocation location))
             {
                 user.Location = location;
             }
 
-            //if (Enum.TryParse(request.Body, out EBody body))
-            //{
-            //    user.Body = body;
-            //}
-
-            //if (Enum.TryParse(request.Target, out ETarget target))
-            //{
-            //    user.Target = target;
-            //}
-
-            //if (Enum.TryParse(request.Education, out EEducation education))
-            //{
-            //    user.Education = education;
-            //}
-
-            //if (Enum.TryParse(request.LikePet, out ELikePet pet))
-            //{
-            //    user.LikePet = pet;
-            //}
-
-            //if (Enum.TryParse(request.LikeTechnology, out ELikeTechnology technology))
-            //{
-            //    user.LikeTechnology = technology;
-            //}
-
-            //if (Enum.TryParse(request.PlaySport, out EPlaySport playSport))
-            //{
-            //    user.PlaySport = playSport;
-            //}
-
-            //if (Enum.TryParse(request.Character, out ECharacter character))
-            //{
-            //    user.Character = character;
-            //}
-
-            //if (Enum.TryParse(request.LifeStyle, out ELifeStyle lifeStyle))
-            //{
-            //    user.LifeStyle = lifeStyle;
-            //}
-
-            //if (Enum.TryParse(request.MostValuable, out EMostValuable mostValuable))
-            //{
-            //    user.MostValuable = mostValuable;
-            //}
-
-            //if (Enum.TryParse(request.Marriage, out EMarriage marriage))
-            //{
-            //    user.Marriage = marriage;
-            //}
 
             if (Enum.TryParse(request.Job, out EJob job))
             {
                 user.Job = job;
             }
 
-            //if (Enum.TryParse(request.Religion, out EReligion religion))
-            //{
-            //    user.Religion = religion;
-            //}
-
-            //if (Enum.TryParse(request.FavoriteMovie, out EFavoriteMovie favoriteMovie))
-            //{
-            //    user.FavoriteMovie = favoriteMovie;
-            //}
-
-            //if (Enum.TryParse(request.AtmosphereLike, out EAtmosphereLike atmosphereLike))
-            //{
-            //    user.AtmosphereLike = atmosphereLike;
-            //}
-
-            //if (Enum.TryParse(request.Smoking, out ESmoking smoking))
-            //{
-            //    user.Smoking = smoking;
-            //}
-
-            //if (Enum.TryParse(request.DrinkBeer, out EDrinkBeer drinkBeer))
-            //{
-            //    user.DrinkBeer = drinkBeer;
-            //}
-
-            //
 
             if (request.PhoneNumber != "" && request.PhoneNumber != null)
             {
@@ -303,15 +243,15 @@ namespace MakeFriendSolution.Application
         {
             int age = CalculateAge(birthDay);
             if (age < 18)
-                return EAgeGroup.Dưới_18_Tuổi;
+                return EAgeGroup.Dưới_18_tuổi;
             else if (age < 26)
-                return EAgeGroup.Từ_18_Đến_25;
+                return EAgeGroup.Từ_18_đến_25;
             else if (age < 31)
-                return EAgeGroup.Từ_25_Đến_30;
+                return EAgeGroup.Từ_25_đến_30;
             else if (age < 41)
-                return EAgeGroup.Từ_31_Đến_40;
+                return EAgeGroup.Từ_31_đến_40;
             else if (age < 51)
-                return EAgeGroup.Từ_41_Đến_50;
+                return EAgeGroup.Từ_41_đến_50;
             else return EAgeGroup.Trên_50;
         }
 
@@ -407,11 +347,11 @@ namespace MakeFriendSolution.Application
         public async Task<bool> UpdateSimilarityScores(Guid userId)
         {
             var oldScores = await _context.SimilarityScores.Where(x => x.FromUserId == userId).ToListAsync();
-            var features = (await _featureApplication.GetFeatures()).Where(x=>x.IsCalculated).ToList();
+            var features = (await _featureApplication.GetFeatures()).Where(x => x.IsCalculated).ToList();
             var columns = features.Count;
 
             var users = await GetUsersToCalculate(userId);
-            
+
             int rows = users.Count;
 
             double[,] usersMatrix = new double[rows, columns];
@@ -505,6 +445,7 @@ namespace MakeFriendSolution.Application
 
                 var total = users.Count / request.PageSize;
                 users = users.OrderByDescending(x => x.Point)
+                    .OrderByDescending(x=>x.CreatedAt)
                     .Skip((request.PageIndex - 1) * request.PageSize)
                     .Take(request.PageSize).ToList();
 
@@ -539,13 +480,21 @@ namespace MakeFriendSolution.Application
             var follow = await _context.Follows
                 .Where(x => x.FromUserId == userId).ToListAsync();
 
+            var user = await _context.Users.FindAsync(userId);
+
             var users = await (from u in _context.Users
-                         select new UserCalculateVM()
-                         {
-                             UserId = u.Id,
-                             Age = CalculateAge(u.Dob),
-                             Gender = u.Gender
-                         }).ToListAsync();
+                               //where (u.Gender == user.FindPeople || user.FindPeople == EGender.Tất_Cả)
+                               //&& (GetAgeGroup(u.Dob) == user.FindAgeGroup || user.FindAgeGroup == EAgeGroup.Tất_cả)
+                               select new UserCalculateVM()
+                               {
+                                   UserId = u.Id,
+                                   Dob = u.Dob,
+                                   Age = CalculateAge(u.Dob),
+                                   Gender = u.Gender
+                               }).ToListAsync();
+
+            users = users.Where(u => (u.Gender == user.FindPeople || user.FindPeople == EGender.Tất_Cả)
+                               && (GetAgeGroup(u.Dob) == user.FindAgeGroup || user.FindAgeGroup == EAgeGroup.Tất_cả)).ToList();
 
             List<Guid> userIds = new List<Guid>
             {
@@ -570,9 +519,6 @@ namespace MakeFriendSolution.Application
                 users.Remove(users.Where(x => x.UserId == item).FirstOrDefault());
             }
 
-            var user = await GetById(userId);
-
-
             foreach (var item in users)
             {
                 item.FeatureViewModels = await _featureApplication.GetFeatureViewModelByUserId(item.UserId);
@@ -594,7 +540,7 @@ namespace MakeFriendSolution.Application
             {
                 for (int j = 0; j < searchFeatures.Count; j++)
                 {
-                    if(calculateUser.FeatureViewModels[i].FeatureId == searchFeatures[j].FeatureId)
+                    if (calculateUser.FeatureViewModels[i].FeatureId == searchFeatures[j].FeatureId)
                     {
                         var search = await _featureApplication.GetFeatureViewModel(searchFeatures[j].FeatureDetailId);
                         calculateUser.FeatureViewModels[i] = search;
@@ -605,6 +551,127 @@ namespace MakeFriendSolution.Application
             users.Insert(0, calculateUser);
 
             return users;
+        }
+
+        public async Task SavePostion(SavePositionRequest request)
+        {
+            var user = await _context.Users.FindAsync(request.UserId);
+
+            if (user == null)
+                throw new Exception("Can not find user with id = " + request.UserId);
+
+            user.Latitude = request.Latitude;
+            user.Longitude = request.Longitude;
+            user.IsUpdatePosition = true;
+            try
+            {
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw new Exception("Can not save position");
+            }
+        }
+
+        public async Task<List<UserDisplay>> FindAround(FindAroundRequest request)
+        {
+            var user = await _context.Users.FindAsync(request.UserId);
+
+            if (user == null)
+                throw new Exception("Can not find user");
+
+            var users = await _context.Users.Where(x => x.Status == EUserStatus.Active && x.IsUpdatePosition).ToListAsync();
+
+            users.Remove(user);
+
+            try
+            {
+                if (request.Gender == 1)
+                {
+                    users = users.Where(x => x.Gender == EGender.Nam).ToList();
+                }
+
+                else if (request.Gender == 2)
+                {
+                    users = users.Where(x => x.Gender == EGender.Nữ).ToList();
+                }
+
+                if (request.AgeGroup != -1)
+                {
+                    users = users.Where(x => GetAgeGroup(x.Dob) == (EAgeGroup)request.AgeGroup).ToList();
+                }
+            }
+            catch (Exception)
+            {
+                throw new Exception("Parameter not correct");
+            }
+
+
+            var currentCoordinates = new Coordinates(user.Latitude, user.Longitude);
+
+            foreach (var u in users)
+            {
+                var distance = new Coordinates(u.Latitude, u.Longitude).DistanceTo(currentCoordinates);
+                u.Distance = distance;
+            }
+
+            users = users.Where(x => x.Distance <= request.Distance).ToList();
+
+            users = users.OrderBy(x => x.Distance)
+                    .Skip((request.PageIndex - 1) * request.PageSize)
+                    .Take(request.PageSize).ToList();
+
+            var responses = new List<UserDisplay>();
+            foreach (var item in users)
+            {
+                var res = new UserDisplay(item, _storageService);
+                res.Followed = await IsFollowed(request.UserId, item.Id);
+                res.Favorited = await IsLiked(request.UserId, item.Id);
+
+                responses.Add(res);
+            }
+
+            return responses;
+        }
+
+        public async Task<List<UserDisplay>> SearchFriend(Guid userId, string name)
+        {
+            name = name.NonUnicode().ToLower().Trim();
+
+            var follows = await _context.Follows
+                .Where(x => x.FromUserId == userId)
+                .Include(x => x.ToUser)
+                .ToListAsync();
+
+            var users = follows.Select(x => x.ToUser).ToList();
+
+            users = users.Where(x => x.FullName.NonUnicode().ToLower().Contains(name)).ToList();
+
+            users = users
+                .Take(9).ToList();
+
+            var resposnes = new List<UserDisplay>();
+
+            foreach (var item in users)
+            {
+                var user = new UserDisplay(item, _storageService);
+                resposnes.Add(user);
+            }
+
+            return resposnes;
+        }
+
+        public async Task<UserDisplay> GetUserDisplayById(Guid userId)
+        {
+            try
+            {
+                return new UserDisplay(await _context.Users.FindAsync(userId), _storageService);
+            }
+            catch (Exception)
+            {
+                throw new Exception("Can not find user");
+            }
         }
     }
 }

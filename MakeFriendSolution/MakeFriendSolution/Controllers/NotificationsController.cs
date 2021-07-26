@@ -49,7 +49,7 @@ namespace MakeFriendSolution.Controllers
         }
 
         [Authorize]
-        [HttpDelete("notificationId")]
+        [HttpDelete("{notificationId}")]
         public async Task<IActionResult> DeleteNotification(int notificationId)
         {
             var delete = await _notificationApp.DeleteNotification(notificationId);

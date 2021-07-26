@@ -12,8 +12,7 @@ namespace MakeFriendSolution.Models.ViewModels
         public bool IsFilter { get; set; }
         public string Location { get; set; }
         public string FullName { get; set; }
-        public int FromAge { get; set; }
-        public int ToAge { get; set; }
+        public string AgeGroup { get; set; }
         public string Gender { get; set; }
     }
 }

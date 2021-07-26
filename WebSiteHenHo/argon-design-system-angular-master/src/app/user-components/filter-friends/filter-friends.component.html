@@ -1,0 +1,101 @@
+<main>
+    <div class="position-relative" style="height: 250px;">
+        <!-- Hero for FREE version -->
+        <section class="section section-lg section-hero section-shaped" style="min-height: 0px; height: 100%;">
+            <!-- Background circles -->
+            <div class="shape shape-style-1 shape-primary">
+                <span class="span-150"></span>
+                <span class="span-50"></span>
+                <span class="span-50"></span>
+            </div>
+        </section>
+    </div>
+    <div class="max-width">
+        <div class="col-8 col-xl-8 col-md-8 filterblock">
+            <div class="d-flex flex-row col-12" style="padding: 0%;">
+                <div class="labelBlack"></div>
+                <div class="d-flex flex-row filter align-items-center">
+                    <h4>Bộ lọc</h4>
+                    <tag-input [(ngModel)]='items' class="ml-5" (onRemove)="deleteHashTag($event)" theme='dark'>
+                    </tag-input>
+                </div>
+            </div>
+            <div class="d-flex flex-row col-12" style="padding: 0%;">
+                <div class="filter">
+                    <div *ngFor="let item of filterSet; let i=index" class="d-flex flex-row align-items-center pl-2">
+                        <p *ngIf="i < 4" class="col-xl-1 col-lg-1 col-md-2 col-3"
+                            style="padding: 0%; min-width: 130px;">{{item.featureName}}
+                        </p>
+                        <ul *ngIf="i < 4" class="col-xl-11 col-lg-11 col-md-10 col-9 nav align-items-center">
+                            <li *ngFor="let itemValue of filterSet[i].value" class="nav-item">
+                                <div id="{{item.featureId}}_{{itemValue.valueId}}" class="btn fa"
+                                    (click)="setStatusValue($event , item.featureId, item.featureName ,itemValue.valueId, itemValue.valueName)">
+                                    {{itemValue.valueName}}</div>
+                            </li>
+                        </ul>
+                        <p *ngIf="i >= 4 && extend" class="col-xl-1 col-lg-1 col-md-2 col-3"
+                            style="padding: 0%; min-width: 130px;">
+                            {{item.featureName}}</p>
+                        <ul *ngIf="i >= 4 && extend" class="col-xl-11 col-lg-11 col-md-10 col-9 nav align-items-center">
+                            <li *ngFor="let itemValue of filterSet[i].value" class="nav-item">
+                                <div id="{{item.featureId}}_{{itemValue.valueId}}" class="btn fa"
+                                    (click)="setStatusValue($event , item.featureId, item.featureName ,itemValue.valueId, itemValue.valueName)">
+                                    {{itemValue.valueName}}</div>
+                            </li>
+                        </ul>
+                    </div>
+                    <button (click)="onFilter()" class="btn btn-primary">Lọc người dùng</button>
+                </div>
+            </div>
+            <div *ngIf="extend" class="arow-fillter" (click)="changeExtend()" style="top: 120px;"><i
+                    class="fa fa-angle-double-up"></i></div>
+            <div *ngIf="!extend" class="arow-fillter" (click)="changeExtend()"><i class="fa fa-angle-double-down"></i>
+            </div>
+        </div>
+    </div>
+    <div id="contentUsers" class="col-lg-12 col-xl-12 col-md-12 col-12 pl-5 pr-5" style="position: absolute;">
+
+
+        <div class='d-flex justify-content-center'>
+            <div class="friend-container">
+                <div *ngIf="Users.length == 0" style="width: 100%;">
+                    <h4 class="text-warning text-center">Không tìm thấy người dùng phù hợp</h4>
+                </div>
+                <div *ngFor="let item of Users; let i = index" class="card-container animate-bottom">
+                    <div class="card person-card">
+                        <div class="d-flex justify-content-center" (click)="clickProfileUser(item.id)">
+                            <a class="image-container" (click)="clickProfileUser(item.id)"><img
+                                    class="card-img-top thumb-table" src="{{item.avatarPath}}" alt="Avatar"></a>
+                        </div>
+                        <div class="card-body">
+                            <div class="summary" (click)="clickProfileUser(item.id)">
+                                <a style="cursor: pointer" (click)="clickProfileUser(item.id)">
+                                    <h6 class="card-title limit-title" style="margin-bottom: 2px; font-size: 90%;">
+                                        {{item.fullName}}
+                                    </h6>
+                                </a>
+                                <p class="card-text limit-text"
+                                    style="line-height: 100%; cursor: pointer; margin-bottom: 0;"><small
+                                        class="text-muted">{{item.summary}}</small></p>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div *ngIf="Loading" style="text-align: center">
+
+            <fa-icon style="color:#5E72E4" size="5x" [icon]="faSpinner" [spin]="true"></fa-icon>
+            <p>Đang tìm bạn bè...</p>
+        </div>
+
+        <div *ngIf="!Loading" class="d-flex justify-content-center see-more">
+            <button (click)="nextPage()" class="btn btn-primary">Xem thêm</button>
+
+        </div>
+    </div>
+
+</main>

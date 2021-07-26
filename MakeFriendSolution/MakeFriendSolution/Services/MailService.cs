@@ -14,10 +14,10 @@ namespace MakeFriendSolution.Services
     {
         public string GetMailBody(LoginInfo info)
         {
-            string url = Startup.DomainName + "api/v1/Authenticates/confirmMail?userId=" + info.UserId;
+            string url = Startup.DomainName + "/api/v1/Authenticates/confirmMail?userId=" + info.UserId;
             return string.Format(@"<div style='text-align:center;'>
-                                    <h1>Welcome to our Web Site</h1>
-                                    <h3>Click below button for verify your Email Id</h3>
+                                    <h1>Chào mừng bạn đến với Zinger</h1>
+                                    <h3>Hãy xác nhận tài khoản của bạn ở đây!</h3>
                                     <form method='post' action='{0}' style='display: inline;'>
                                       <button type = 'submit' style=' display: block;
                                                                     text-align: center;
@@ -29,7 +29,7 @@ namespace MakeFriendSolution.Services
                                                                     cursor:pointer;
                                                                     width:100%;
                                                                     padding:10px;'>
-                                        Confirm Mail
+                                        Xác nhận
                                       </button>
                                     </form>
                                 </div>", url, info.UserId);
@@ -38,9 +38,9 @@ namespace MakeFriendSolution.Services
         public string GetMailBodyToForgotPassword(LoginInfo info)
         {
             return string.Format(@"<div style='text-align:center;'>
-                                    <h1>Hello {0}, Welcome to our Web Site</h1>
-                                    <h3>This mail contains a confirmation code for forgetting your password.</h3>
-                                    <p>Your code validation: <b>{1}</b></p>
+                                    <h1>Hello {0}, Chào mừng bạn đến với Zinger</h1>
+                                    <h3>Email này chứa mã xác nhận giúp bạn có thể làm mới mật khẩu.</h3>
+                                    <p>Mã xác nhận: <b>{1}</b></p>
                                 </div>", info.FullName, info.Message);
         }
 
@@ -66,6 +66,7 @@ namespace MakeFriendSolution.Services
 
                     using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
                     {
+                        smtp.UseDefaultCredentials = false;
                         smtp.Credentials = new System.Net.NetworkCredential(mailClass.FromMail, mailClass.FromMailPassword);
                         smtp.EnableSsl = true;
                         await smtp.SendMailAsync(mail);
