@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "559305154052",
+    "project_id": "zinger-483b9",
+    "storage_bucket": "zinger-483b9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:559305154052:android:272a1193931f37f466df51",
+        "android_client_info": {
+          "package_name": "com.example.tinder_clone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "559305154052-sbviftjas39j5dc3nlr9a8lckt22ge4m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAC1h_bjyxnYLdk2LBzwcbqyJtHZm7fCI4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "559305154052-sbviftjas39j5dc3nlr9a8lckt22ge4m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
