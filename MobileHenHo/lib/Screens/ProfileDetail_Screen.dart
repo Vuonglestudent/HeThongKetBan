@@ -325,19 +325,19 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                                     style: TextStyle(fontSize: 35.sp)),
                               ),
                             ),
-                            Expanded(
-                              child: ListTile(
-                                title: Text(
-                                  userProfile.getUserProfile.numberOfFollowers
-                                      .toString(),
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                subtitle: Text("Theo dõi",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(fontSize: 35.sp)),
-                              ),
-                            ),
+                            // Expanded(
+                            //   child: ListTile(
+                            //     title: Text(
+                            //       userProfile.getUserProfile.numberOfFollowers
+                            //           .toString(),
+                            //       textAlign: TextAlign.center,
+                            //       style: TextStyle(fontWeight: FontWeight.bold),
+                            //     ),
+                            //     subtitle: Text("Theo dõi",
+                            //         textAlign: TextAlign.center,
+                            //         style: TextStyle(fontSize: 35.sp)),
+                            //   ),
+                            // ),
                             Expanded(
                               child: ListTile(
                                 title: Text(
@@ -373,8 +373,12 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                               clickButton: userProfile.getUserProfile.followed,
                               onPressed: () async {
                                 try {
+                                  Provider.of<Loading>(context, listen: false)
+                                      .setLoading();
                                   await UserService().setFollow(widget.userId);
                                   userProfile.setFollowedProfilePage();
+                                  Provider.of<Loading>(context, listen: false)
+                                      .setLoading();
                                 } catch (e) {}
                               },
                             ),
@@ -389,9 +393,13 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                               clickButton: userProfile.getUserProfile.favorited,
                               onPressed: () async {
                                 try {
+                                  Provider.of<Loading>(context, listen: false)
+                                      .setLoading();
                                   await UserService()
                                       .setFavorite(widget.userId);
                                   userProfile.setFavoritedProfilePage();
+                                  Provider.of<Loading>(context, listen: false)
+                                      .setLoading();
                                 } catch (e) {}
                               },
                             )

@@ -715,6 +715,9 @@ class _InPersonChatScreenState extends State<InPersonChatScreen> {
                                     setState(() {
                                       contentChat = '';
                                       isImage = false;
+                                      Provider.of<UserProvider>(context,
+                                              listen: false)
+                                          .cancelAddImages();
                                     });
 
                                     _messageController.clear();

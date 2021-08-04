@@ -576,13 +576,8 @@ class UserProvider extends ChangeNotifier {
     try {
       List<MultipartFile> multipartImageList =
           await convertImage(assets, 'Files');
-      print(multipartImageList.length);
       return MessageService()
-          .sendMessage(destUserId, content, multipartImageList)
-          .then((value) {
-        _images = [];
-        notifyListeners();
-      });
+          .sendMessage(destUserId, content, multipartImageList);
     } catch (e) {
       print("error send image: " + e.toString());
     }
@@ -620,7 +615,7 @@ class UserProvider extends ChangeNotifier {
       var prefs = await SharedPreferences.getInstance();
       var distance = prefs.getString('radiusLocation') ?? '20';
       var gender = prefs.getString('genderLocation') ?? '0';
-      var age = prefs.getString('ageLocation') ?? '0';
+      var age = prefs.getString('ageLocation') ?? '-1';
       var userId = prefs.getString('userId');
       print('search around: $distance km, $gender, $age');
 
@@ -632,6 +627,7 @@ class UserProvider extends ChangeNotifier {
         gender: int.parse(gender),
         ageGroup: int.parse(age),
       );
+
       var response = await UserService().findAround(aroundPage);
       if (response != []) {
         usersSimilar = [];
